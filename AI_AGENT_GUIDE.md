@@ -46,6 +46,14 @@ The main goal of the documents herein is to provide clear, actionable guidance f
             *   **Purpose:** Outlines the structure and conventions for session tracking markdown files created by the "Session Tracking" workflow.
             *   **Structure:** File naming (`YYYY-MM-DD-session-N.md` in `notes/`), sections for Summary, Topics/Goals, Activity Log.
 
+*   **Code Quality Guidelines (`CODE_QUALITY.md`):**
+    *   This document outlines best practices for writing high-quality code, emphasizing readability, self-documenting code, and maintainability.
+    *   **Action:** Adhere to these guidelines when writing or reviewing code. Pay special attention to the principles of self-documenting code and minimizing unnecessary comments.
+    *   **Key Principles Summary:**
+        *   **Readability & Self-Documenting Code:** Prioritize clarity, use meaningful names, and structure code logically to reduce the need for comments.
+        *   **Commenting:** Comment the *why*, not the *what*. Keep comments up-to-date and avoid clutter.
+        *   **Maintainability:** Follow DRY, SRP, and aim for loose coupling.
+
 ## 4. General Principles for Interaction
 
 *   **Clarity:** Strive for clear and unambiguous communication.
