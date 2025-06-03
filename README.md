@@ -27,3 +27,7 @@ This repository includes a suite of documents covering essential aspects of AI-a
 2.  **For Users:** Familiarize yourself with the `AI_AGENT_GUIDE.md` to understand how the AI agent is configured to operate and what guidelines it follows. You can then leverage the defined workflows (e.g., by saying "start new session" or "I need to breakdown this idea") and expect adherence to the documented standards.
 
 These documents are intended to be living and will evolve. Contributions and suggestions for improvement are welcome!
+
+
+---
+Co-created with assistance from Google's Gemini AI.
