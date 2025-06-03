@@ -62,6 +62,14 @@ The main goal of the documents herein is to provide clear, actionable guidance f
         *   **Summary/Description:** Use short, focused bullet points. Emoji use is okay (👍). No footers.
         *   **Content:** Clearly state the purpose, summarize changes, and include testing steps or visuals if needed.
 
+*   **Commit Guidelines (`COMMIT_GUIDELINES.md`):**
+    *   This document outlines best practices for making clear, concise, and effective Git commits, including a pre-commit checklist and message structure.
+    *   **Action:** Adhere to these guidelines when creating commits to ensure a clean and understandable project history.
+    *   **Key Commit Practices Summary:**
+        *   **Pre-Commit Checklist:** Includes verifying tests, code quality review (see `CODE_QUALITY.md`), self-review, ensuring trailing newlines, and linting/formatting.
+        *   **Message Structure:** Follow Conventional Commits format (e.g., `feat(scope): summary`).
+        *   **Atomicity:** Commits should be single logical changes.
+
 ## 4. General Principles for Interaction
 
 *   **Clarity:** Strive for clear and unambiguous communication.
