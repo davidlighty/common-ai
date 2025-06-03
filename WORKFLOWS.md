@@ -35,7 +35,7 @@
 -   **Description:** "A workflow to create, manage, and finalize session documents that track the context, goals, and progress of collaborative work. This ensures that both AI agents and humans can easily understand the session's activities and resume work if needed."
 
 ### Config:
--   **SESSION_NOTES_DIR:** `notes/`
+-   **SESSION_BASE_DIR:** `notes/sessions/`
 -   **SESSION_DESIGN_DOC_PATH:** `descriptions/SESSION_TRACKING_DESIGN.md`
 
 ### Steps:
@@ -44,18 +44,21 @@
     *   **Trigger:** User initiates with a "start new session" type of prompt.
     *   **Details:**
         1.  Acknowledge the request: "Okay, starting a new session!"
-        2.  Determine the current date (e.g., `2025-06-02`).
-        3.  Check the directory specified in `SESSION_NOTES_DIR` (see Config section) for existing session files for the current date to determine the correct session number (e.g., if `SESSION_NOTES_DIR/2025-06-02-session-1.md` exists, the new file will be `SESSION_NOTES_DIR/2025-06-02-session-2.md`. If no files exist for the date, it will be `session-1`). The workflow should create the `SESSION_NOTES_DIR` if it doesn't exist.
-        4.  Create a new markdown file in the `SESSION_NOTES_DIR`, following the structure and template outlined in `SESSION_DESIGN_DOC_PATH` (see Config section).
-            *   **Filename format:** `YYYY-MM-DD-session-N.md` (e.g., `2025-06-02-session-1.md`).
-        5.  Inform the user about the created file: "I've created a new session file at `[SESSION_NOTES_DIR]/YYYY-MM-DD-session-N.md` to track our work. It follows the guidelines in `SESSION_DESIGN_DOC_PATH`."
-        6.  Prompt for initial context: "What is the main topic or goal for this session?"
+        2.  Determine the current date string in `YYYY-MM-DD` format (e.g., `2023-10-27`). Let this be `CURRENT_DATE_STR`.
+        3.  Construct the target session directory path for the current date: `SESSION_BASE_DIR` (from Config) + `CURRENT_DATE_STR` + `/` (e.g., `notes/sessions/2023-10-27/`). Let this be `TODAYS_SESSION_DIR`.
+        4.  Ensure `TODAYS_SESSION_DIR` exists. If not, create it. This includes ensuring the parent `SESSION_BASE_DIR` also exists.
+        5.  Determine the next session number (`N`) for `CURRENT_DATE_STR` by checking for existing `session-*.md` files in `TODAYS_SESSION_DIR`. Parse the numbers from these filenames (e.g., from `session-1.md`, `session-2.md`). The new session number `N` will be the maximum existing number + 1, or 1 if no such files exist.
+        6.  Construct the new session filename: `session-N.md`. Let this be `SESSION_FILENAME`.
+        7.  The full path to the new session file will be `TODAYS_SESSION_DIR` + `SESSION_FILENAME` (e.g., `notes/sessions/2023-10-27/session-1.md`).
+        8.  Create the new markdown file at this full path, following the structure and template outlined in `SESSION_DESIGN_DOC_PATH` (from Config).
+        9.  Inform the user about the created file: "I've created a new session file at `[full path to session file]` to track our work. It follows the guidelines in `SESSION_DESIGN_DOC_PATH`."
+        10. Prompt for initial context: "What is the main topic or goal for this session?"
 
 2.  **Action:** Update Session Document (Ongoing)
     *   **Trigger:** Implicitly, throughout the user's interaction after a session has started.
     *   **Details:**
         1.  As the conversation progresses (e.g., user provides information, asks questions, new ideas are discussed, tasks are performed):
-            *   Append concise entries to the "Notes / Activity Log" section of the *current* session markdown file (located in `SESSION_NOTES_DIR`). Entries should be timestamped or clearly denote the flow of work, as per `SESSION_DESIGN_DOC_PATH`.
+            *   Append concise entries to the "Notes / Activity Log" section of the *current* session markdown file (e.g. `notes/sessions/YYYY-MM-DD/session-N.md`). Entries should be timestamped or clearly denote the flow of work, as per `SESSION_DESIGN_DOC_PATH`.
             *   If the user explicitly states or clarifies a goal, add it to the "Topics / Goals" list in the current session file.
             *   Periodically, or when a significant sub-task is completed, the AI can internally try to update or refine a draft of the "Summary" section in the current session file.
 
@@ -63,7 +66,7 @@
     *   **Trigger:** User initiates with an "end session" type of prompt.
     *   **Details:**
         1.  Acknowledge the request: "Okay, let's finalize this session."
-        2.  Read the current content of the active session file (`[SESSION_NOTES_DIR]/YYYY-MM-DD-session-N.md`).
+        2.  Read the current content of the active session file (e.g. `notes/sessions/YYYY-MM-DD/session-N.md`).
         3.  Prompt the user to review and update the session details as per `SESSION_DESIGN_DOC_PATH` (Summary, Topics/Goals).
             "Before we close this session, let's review and complete the session document.
             Current draft **Summary**: [Show current summary, or "Not yet drafted"]
@@ -80,4 +83,4 @@
             - Session ended at HH:MM (current time).
             ```
         9.  Save the finalized session document.
-        10. Confirm finalization: "The session document `[SESSION_NOTES_DIR]/YYYY-MM-DD-session-N.md` has been updated and finalized. Ready for the next task when you are!" 
+        10. Confirm finalization: "The session document `[full path to session file, e.g., notes/sessions/YYYY-MM-DD/session-N.md]` has been updated and finalized. Ready for the next task when you are!" 

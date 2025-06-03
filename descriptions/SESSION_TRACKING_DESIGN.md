@@ -4,9 +4,8 @@ This document outlines the structure and conventions for session tracking markdo
 
 ## File Naming Convention
 
--   **Directory:** `notes/` (relative to the workspace root)
--   **Format:** `YYYY-MM-DD-session-N.md`
-    -   `YYYY-MM-DD`: The date the session was initiated.
+-   **Directory:** `notes/sessions/YYYY-MM-DD/` (where `YYYY-MM-DD` is the date the session was initiated).
+-   **Format (within the dated directory):** `session-N.md`
     -   `N`: A sequential number for sessions started on the same date (e.g., `session-1`, `session-2`).
 
 ## Markdown File Structure & Template
