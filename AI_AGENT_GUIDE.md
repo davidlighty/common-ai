@@ -54,6 +54,14 @@ The main goal of the documents herein is to provide clear, actionable guidance f
         *   **Commenting:** Comment the *why*, not the *what*. Keep comments up-to-date and avoid clutter.
         *   **Maintainability:** Follow DRY, SRP, and aim for loose coupling.
 
+*   **Pull Request Guidelines (`PULL_REQUEST_GUIDELINES.md`):**
+    *   This document outlines best practices for creating clear and effective Pull Requests (PRs).
+    *   **Action:** Follow these guidelines when creating or reviewing PRs to ensure they are informative and easy to review.
+    *   **Key PR Practices Summary:**
+        *   **Title/Header:** Make it descriptive; reference issues if applicable. Conventional prefixes (`feat:`, `fix:`) are good.
+        *   **Summary/Description:** Use short, focused bullet points. Emoji use is okay (👍). No footers.
+        *   **Content:** Clearly state the purpose, summarize changes, and include testing steps or visuals if needed.
+
 ## 4. General Principles for Interaction
 
 *   **Clarity:** Strive for clear and unambiguous communication.
