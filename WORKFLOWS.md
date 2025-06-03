@@ -44,20 +44,21 @@
     *   **Trigger:** User initiates with a "start new session" type of prompt.
     *   **Details:**
         1.  Acknowledge the request: "Okay, starting a new session!"
-        2.  Attempt to retrieve `KNOWLEDGE_BASE_NOTES_DIR` from the \'Global Configuration\' section of `AI_AGENT_GUIDE.md`. If not found or path is invalid, inform user and stop workflow, suggesting manual note-taking.
+        2.  Attempt to retrieve `KNOWLEDGE_BASE_NOTES_DIR_VALUE` from the 'Global Configuration' section of `AI_AGENT_GUIDE.md` (e.g., `~/notes/`). If not found or path is invalid, inform user and stop workflow, suggesting manual note-taking.
         3.  Determine the current date string in `YYYY-MM-DD` format (e.g., `2023-10-27`). Let this be `CURRENT_DATE_STR`.
-        4.  Construct the target session directory path for the current date: `[KNOWLEDGE_BASE_NOTES_DIR value]` + `sessions/` + `CURRENT_DATE_STR` + `/` (e.g., `~/notes/sessions/2023-10-27/`). Let this be `ABS_TODAYS_SESSION_DIR`.
-        5.  **Attempt to create directory:** Try to ensure `ABS_TODAYS_SESSION_DIR` exists (e.g., using `mkdir -p "[ABS_TODAYS_SESSION_DIR]"`).
+        4.  **AI Action for Path Expansion:** Programmatically expand `KNOWLEDGE_BASE_NOTES_DIR_VALUE` to an absolute path. For instance, if it starts with `~/`, replace `~` with the user's actual home directory (e.g., `/home/dlighty`). Let the result be `ABS_KNOWLEDGE_BASE_NOTES_DIR`. If expansion is not possible or fails, inform the user and fall back to guiding manual note creation.
+        5.  Construct the absolute target session directory path: `ABS_KNOWLEDGE_BASE_NOTES_DIR` + `sessions/` + `CURRENT_DATE_STR` + `/` (e.g., `/home/dlighty/notes/sessions/2023-10-27/`). Let this be `ABS_TODAYS_SESSION_DIR`.
+        6.  **Attempt to create directory:** Try to ensure `ABS_TODAYS_SESSION_DIR` exists using a command like `mkdir -p "[ABS_TODAYS_SESSION_DIR]"`. (Quotes are generally safe here as the path is now absolute and won't have shell expansion issues with `~`).
             *   **If successful:** Proceed.
             *   **If failed (e.g., due to permissions or tool limitations):** Inform the user: "I was unable to create the directory `[ABS_TODAYS_SESSION_DIR]`. Please create it manually." Then, prompt: "Once the directory is ready, or if you prefer to use a different path for today\'s session notes, please provide the full directory path." If user provides a path, use it for `ABS_TODAYS_SESSION_DIR`; otherwise, fall back to guiding manual note creation.
-        6.  Determine the next session number (`N`) for `CURRENT_DATE_STR` by checking for existing `session-*.md` files in `ABS_TODAYS_SESSION_DIR`. This may require tools to list external directories; if unable, assume `N=1` and inform the user, or ask the user for `N`.
-        7.  Construct the new session filename: `session-N.md`. Let this be `SESSION_FILENAME`.
-        8.  The full path to the new session file will be `ABS_TODAYS_SESSION_DIR` + `SESSION_FILENAME`. Let this be `ABS_SESSION_FILE_PATH`.
-        9.  **Attempt to create session file:** Try to create a new markdown file at `ABS_SESSION_FILE_PATH`, using the template from `SESSION_DESIGN_DOC_PATH`.
+        7.  Determine the next session number (`N`) for `CURRENT_DATE_STR` by checking for existing `session-*.md` files in `ABS_TODAYS_SESSION_DIR`. This may require tools to list external directories; if unable, assume `N=1` and inform the user, or ask the user for `N`.
+        8.  Construct the new session filename: `session-N.md`. Let this be `SESSION_FILENAME`.
+        9.  The full path to the new session file will be `ABS_TODAYS_SESSION_DIR` + `SESSION_FILENAME`. Let this be `ABS_SESSION_FILE_PATH`.
+        10. **Attempt to create session file:** Try to create a new markdown file at `ABS_SESSION_FILE_PATH`, using the template from `SESSION_DESIGN_DOC_PATH`.
             *   **If successful:** Inform the user: "I\'ve attempted to create a new session file at `[ABS_SESSION_FILE_PATH]`. It follows the guidelines in `SESSION_DESIGN_DOC_PATH`."
             *   **If failed:** Inform the user: "I was unable to create the session file at `[ABS_SESSION_FILE_PATH]`. Please create it manually using the template from `SESSION_DESIGN_DOC_PATH`." Then provide the template content.
-        10. Prompt for initial context: "What is the main topic or goal for this session?"
-        11. Store `ABS_SESSION_FILE_PATH` as the active session file for this workflow instance.
+        11. Prompt for initial context: "What is the main topic or goal for this session?"
+        12. Store `ABS_SESSION_FILE_PATH` as the active session file for this workflow instance.
 
 2.  **Action:** Update Session Document (Ongoing)
     *   **Trigger:** Implicitly, throughout the user\'s interaction after a session has started.
