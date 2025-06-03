@@ -10,7 +10,15 @@ Welcome, AI Agent! This repository, `common-ai`, is designed to store common rul
 
 The main goal of the documents herein is to provide clear, actionable guidance for tasks, content creation, and interaction patterns. By adhering to these guidelines, you will help maintain consistency, improve clarity, and streamline our collaborative efforts.
 
-## 3. Key Documents & Starting Points
+## 3. Global Configuration
+
+This section defines global configuration variables that may be referenced by other documents or workflows.
+
+*   **`KNOWLEDGE_BASE_NOTES_DIR`**: `~/notes/`
+    *   **Description**: The absolute base path to your personal knowledge base where session notes should be stored. Workflows requiring session note creation will attempt to use this path.
+    *   **Note for AI Agent**: Operations to this directory are outside the project workspace. File/directory creation may fail due to permissions or tool limitations. If an operation fails, inform the user and suggest they perform the action manually.
+
+## 4. Key Documents & Starting Points
 
 *   **Workflows (`WORKFLOWS.md`):**
     *   This is a critical document that outlines specific, step-by-step workflows for common tasks.
@@ -70,7 +78,7 @@ The main goal of the documents herein is to provide clear, actionable guidance f
         *   **Message Structure:** Follow Conventional Commits format (e.g., `feat(scope): summary`).
         *   **Atomicity:** Commits should be single logical changes.
 
-## 4. General Principles for Interaction
+## 5. General Principles for Interaction
 
 *   **Clarity:** Strive for clear and unambiguous communication.
 *   **Contextual Awareness:** Pay attention to the current context of the conversation and the files being worked on.
@@ -78,7 +86,7 @@ The main goal of the documents herein is to provide clear, actionable guidance f
 *   **Adherence to Structure:** When creating or modifying documents for which a template or structure is defined here, please adhere to that structure closely.
 *   **Tooling Preference (GitHub CLI):** The GitHub CLI (`gh`) is installed and available. When interacting with GitHub repositories (e.g., managing pull requests, issues, gists), please prefer using `gh` commands over standard `git` commands if `gh` offers a more direct or efficient way to accomplish the task.
 
-## 5. Evolution
+## 6. Evolution
 
 These documents are living and will evolve. Always refer to the latest versions in this repository.
 

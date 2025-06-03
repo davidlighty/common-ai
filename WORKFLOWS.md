@@ -30,13 +30,13 @@
 ## Session Tracking
 
 -   **Workflow Name:** Session Tracking
--   **Trigger Pattern (Start):** "start new session" (and similar phrases like "begin new session", "let's start a new session")
--   **Trigger Pattern (End):** "finish and exit", "end session", "all done let's finish" (and similar phrases like "wrap up session", "conclude session")
--   **Description:** "A workflow to create, manage, and finalize session documents that track the context, goals, and progress of collaborative work. This ensures that both AI agents and humans can easily understand the session's activities and resume work if needed."
+-   **Trigger Pattern (Start):** "start new session" (and similar phrases like "begin new session", "let\'s start a new session")
+-   **Trigger Pattern (End):** "finish and exit", "end session", "all done let\'s finish" (and similar phrases like "wrap up session", "conclude session")
+-   **Description:** "A workflow to manage and document collaborative work sessions. It attempts to create session notes in the user\'s specified external knowledge base. If automated creation fails, it will guide the user to do so manually."
 
 ### Config:
--   **SESSION_BASE_DIR:** `notes/sessions/`
--   **SESSION_DESIGN_DOC_PATH:** `descriptions/SESSION_TRACKING_DESIGN.md`
+-   **SESSION_DESIGN_DOC_PATH:** `descriptions/SESSION_TRACKING_DESIGN.md` 
+    (Note: `KNOWLEDGE_BASE_NOTES_DIR` is now globally defined in `AI_AGENT_GUIDE.md`)
 
 ### Steps:
 
@@ -44,43 +44,44 @@
     *   **Trigger:** User initiates with a "start new session" type of prompt.
     *   **Details:**
         1.  Acknowledge the request: "Okay, starting a new session!"
-        2.  Determine the current date string in `YYYY-MM-DD` format (e.g., `2023-10-27`). Let this be `CURRENT_DATE_STR`.
-        3.  Construct the target session directory path for the current date: `SESSION_BASE_DIR` (from Config) + `CURRENT_DATE_STR` + `/` (e.g., `notes/sessions/2023-10-27/`). Let this be `TODAYS_SESSION_DIR`.
-        4.  Ensure `TODAYS_SESSION_DIR` exists. If not, create it. This includes ensuring the parent `SESSION_BASE_DIR` also exists.
-        5.  Determine the next session number (`N`) for `CURRENT_DATE_STR` by checking for existing `session-*.md` files in `TODAYS_SESSION_DIR`. Parse the numbers from these filenames (e.g., from `session-1.md`, `session-2.md`). The new session number `N` will be the maximum existing number + 1, or 1 if no such files exist.
-        6.  Construct the new session filename: `session-N.md`. Let this be `SESSION_FILENAME`.
-        7.  The full path to the new session file will be `TODAYS_SESSION_DIR` + `SESSION_FILENAME` (e.g., `notes/sessions/2023-10-27/session-1.md`).
-        8.  Create the new markdown file at this full path, following the structure and template outlined in `SESSION_DESIGN_DOC_PATH` (from Config).
-        9.  Inform the user about the created file: "I've created a new session file at `[full path to session file]` to track our work. It follows the guidelines in `SESSION_DESIGN_DOC_PATH`."
+        2.  Attempt to retrieve `KNOWLEDGE_BASE_NOTES_DIR` from the \'Global Configuration\' section of `AI_AGENT_GUIDE.md`. If not found or path is invalid, inform user and stop workflow, suggesting manual note-taking.
+        3.  Determine the current date string in `YYYY-MM-DD` format (e.g., `2023-10-27`). Let this be `CURRENT_DATE_STR`.
+        4.  Construct the target session directory path for the current date: `[KNOWLEDGE_BASE_NOTES_DIR value]` + `sessions/` + `CURRENT_DATE_STR` + `/` (e.g., `~/notes/sessions/2023-10-27/`). Let this be `ABS_TODAYS_SESSION_DIR`.
+        5.  **Attempt to create directory:** Try to ensure `ABS_TODAYS_SESSION_DIR` exists (e.g., using `mkdir -p "[ABS_TODAYS_SESSION_DIR]"`).
+            *   **If successful:** Proceed.
+            *   **If failed (e.g., due to permissions or tool limitations):** Inform the user: "I was unable to create the directory `[ABS_TODAYS_SESSION_DIR]`. Please create it manually." Then, prompt: "Once the directory is ready, or if you prefer to use a different path for today\'s session notes, please provide the full directory path." If user provides a path, use it for `ABS_TODAYS_SESSION_DIR`; otherwise, fall back to guiding manual note creation.
+        6.  Determine the next session number (`N`) for `CURRENT_DATE_STR` by checking for existing `session-*.md` files in `ABS_TODAYS_SESSION_DIR`. This may require tools to list external directories; if unable, assume `N=1` and inform the user, or ask the user for `N`.
+        7.  Construct the new session filename: `session-N.md`. Let this be `SESSION_FILENAME`.
+        8.  The full path to the new session file will be `ABS_TODAYS_SESSION_DIR` + `SESSION_FILENAME`. Let this be `ABS_SESSION_FILE_PATH`.
+        9.  **Attempt to create session file:** Try to create a new markdown file at `ABS_SESSION_FILE_PATH`, using the template from `SESSION_DESIGN_DOC_PATH`.
+            *   **If successful:** Inform the user: "I\'ve attempted to create a new session file at `[ABS_SESSION_FILE_PATH]`. It follows the guidelines in `SESSION_DESIGN_DOC_PATH`."
+            *   **If failed:** Inform the user: "I was unable to create the session file at `[ABS_SESSION_FILE_PATH]`. Please create it manually using the template from `SESSION_DESIGN_DOC_PATH`." Then provide the template content.
         10. Prompt for initial context: "What is the main topic or goal for this session?"
+        11. Store `ABS_SESSION_FILE_PATH` as the active session file for this workflow instance.
 
 2.  **Action:** Update Session Document (Ongoing)
-    *   **Trigger:** Implicitly, throughout the user's interaction after a session has started.
+    *   **Trigger:** Implicitly, throughout the user\'s interaction after a session has started.
     *   **Details:**
-        1.  As the conversation progresses (e.g., user provides information, asks questions, new ideas are discussed, tasks are performed):
-            *   Append concise entries to the "Notes / Activity Log" section of the *current* session markdown file (e.g. `notes/sessions/YYYY-MM-DD/session-N.md`). Entries should be timestamped or clearly denote the flow of work, as per `SESSION_DESIGN_DOC_PATH`.
-            *   If the user explicitly states or clarifies a goal, add it to the "Topics / Goals" list in the current session file.
-            *   Periodically, or when a significant sub-task is completed, the AI can internally try to update or refine a draft of the "Summary" section in the current session file.
+        1.  Refer to the active `ABS_SESSION_FILE_PATH`.
+        2.  As the conversation progresses, AI *may suggest* content to append to the "Notes / Activity Log" or "Topics / Goals" sections.
+        3.  **Note for AI Agent:** Directly appending to an external file at `ABS_SESSION_FILE_PATH` might be restricted. If so, provide the suggested text to the user and instruct them to manually append it to their session note at `[ABS_SESSION_FILE_PATH]`.
+            *   Example: "To update your session log, please add: \'- [HH:MM] Discussed X.\'"
 
 3.  **Action:** Finalize Session
     *   **Trigger:** User initiates with an "end session" type of prompt.
     *   **Details:**
-        1.  Acknowledge the request: "Okay, let's finalize this session."
-        2.  Read the current content of the active session file (e.g. `notes/sessions/YYYY-MM-DD/session-N.md`).
-        3.  Prompt the user to review and update the session details as per `SESSION_DESIGN_DOC_PATH` (Summary, Topics/Goals).
-            "Before we close this session, let's review and complete the session document.
-            Current draft **Summary**: [Show current summary, or "Not yet drafted"]
-            Current **Topics / Goals**:
-            [List current topics/goals, or "None explicitly set"]
-
-            Please provide a brief summary for this session. What were the key things we worked on or discussed?"
-        4.  User provides input for the summary.
-        5.  Ask for any final additions to topics/goals: "Are there any other specific topics or goals we should list for this session?"
-        6.  User provides any additional topics/goals.
-        7.  Update the "Summary" and "Topics / Goals" sections in the markdown file with the user's input.
-        8.  Append a final entry to the "Notes / Activity Log" as per `SESSION_DESIGN_DOC_PATH`:
-            ```markdown
+        1.  Acknowledge the request: "Okay, let\'s finalize this session."
+        2.  Refer to the active `ABS_SESSION_FILE_PATH`.
+        3.  **Note for AI Agent:** Reading the external file at `ABS_SESSION_FILE_PATH` might be restricted. If unable to read, proceed by asking the user for current summary/goals.
+        4.  Attempt to read the current content of `ABS_SESSION_FILE_PATH`.
+        5.  Prompt the user to review and provide the final "Summary" and "Topics / Goals" for the session document at `[ABS_SESSION_FILE_PATH]`.
+            "Before we close this session, please review your session document at `[ABS_SESSION_FILE_PATH]`.
+            What is a brief summary for this session? What were the key things we worked on or discussed?"
+            (If content was read: "Current draft **Summary**: [Show current summary, or "Not yet drafted"]...")
+        6.  User provides input for the summary and any final topics/goals.
+        7.  **Note for AI Agent:** Directly updating the external file might be restricted. If so, provide the formatted "Summary", "Topics/Goals", and final "Session ended" log entry to the user, instructing them to update `[ABS_SESSION_FILE_PATH]`.
+        8.  If direct update is possible, update the relevant sections and add the final log entry:
+            \'\'\'markdown
             - Session ended at HH:MM (current time).
-            ```
-        9.  Save the finalized session document.
-        10. Confirm finalization: "The session document `[full path to session file, e.g., notes/sessions/YYYY-MM-DD/session-N.md]` has been updated and finalized. Ready for the next task when you are!" 
+            \'\'\'
+        9.  Confirm action: "Please ensure your session document `[ABS_SESSION_FILE_PATH]` is updated with the final summary, goals, and closing entry. Ready for the next task when you are!" 

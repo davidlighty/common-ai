@@ -4,7 +4,9 @@ This document outlines the structure and conventions for session tracking markdo
 
 ## File Naming Convention
 
--   **Directory:** `notes/sessions/YYYY-MM-DD/` (where `YYYY-MM-DD` is the date the session was initiated).
+-   **Base Directory:** Refer to `KNOWLEDGE_BASE_NOTES_DIR` in `AI_AGENT_GUIDE.md` (e.g., `~/notes/`).
+-   **Structure within Base:** `sessions/YYYY-MM-DD/` (where `YYYY-MM-DD` is the date the session was initiated).
+-   **Full Path Example:** `[KNOWLEDGE_BASE_NOTES_DIR]/sessions/YYYY-MM-DD/`
 -   **Format (within the dated directory):** `session-N.md`
     -   `N`: A sequential number for sessions started on the same date (e.g., `session-1`, `session-2`).
 
