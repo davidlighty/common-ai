@@ -45,7 +45,7 @@
     *   **Details:**
         1.  Acknowledge the request: "Okay, starting a new session!"
         2.  Attempt to retrieve `KNOWLEDGE_BASE_NOTES_DIR_VALUE` from the 'Global Configuration' section of `AI_AGENT_GUIDE.md` (e.g., `~/notes/`). If not found or path is invalid, inform user and stop workflow, suggesting manual note-taking.
-        3.  Determine the current date string in `YYYY-MM-DD` format (e.g., `2023-10-27`). Let this be `CURRENT_DATE_STR`.
+        3.  Unless a specific date (YYYY-MM-DD) is provided by the user during session initiation, **AI Action:** Programmatically determine the current date string in `YYYY-MM-DD` format (e.g., `2023-10-27`). If a date is provided by the user, validate its format; if invalid, inform the user and request a correct YYYY-MM-DD date or default to the current date. Let the determined or provided valid date be `CURRENT_DATE_STR`.
         4.  **AI Action for Path Expansion:** Programmatically expand `KNOWLEDGE_BASE_NOTES_DIR_VALUE` to an absolute path. For instance, if it starts with `~/`, replace `~` with the user's actual home directory (e.g., `/home/dlighty`). Let the result be `ABS_KNOWLEDGE_BASE_NOTES_DIR`. If expansion is not possible or fails, inform the user and fall back to guiding manual note creation.
         5.  Construct the absolute target session directory path: `ABS_KNOWLEDGE_BASE_NOTES_DIR` + `sessions/` + `CURRENT_DATE_STR` + `/` (e.g., `/home/dlighty/notes/sessions/2023-10-27/`). Let this be `ABS_TODAYS_SESSION_DIR`.
         6.  **Attempt to create directory:** Try to ensure `ABS_TODAYS_SESSION_DIR` exists using a command like `mkdir -p "[ABS_TODAYS_SESSION_DIR]"`. (Quotes are generally safe here as the path is now absolute and won't have shell expansion issues with `~`).

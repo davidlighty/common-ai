@@ -32,6 +32,18 @@ This section defines global configuration variables that may be referenced by ot
             *   **Start Trigger Pattern:** "start new session", "begin new session", "let's start a new session".
             *   **End Trigger Pattern:** "finish and exit", "end session", "all done let's finish".
 
+*   **General Development Workflow (`GENERAL_DEV_WORKFLOW.md`):**
+    *   This document outlines a comprehensive, phased workflow for typical software development projects. It serves as a high-level guide for the entire development lifecycle.
+    *   **Action:** Consult `[@GENERAL_DEV_WORKFLOW.md](./GENERAL_DEV_WORKFLOW.md)` to understand the standard phases and steps for project execution. When undertaking development tasks, be aware of how your current activities fit into this broader workflow. This document now also includes direct references to the `AI_CODING_FRAMEWORK.md` for AI-specific execution guidelines.
+
+*   **AI Coding Framework (`frameworks/AI_CODING_FRAMEWORK.md`):**
+    *   This framework provides specific coding standards, rules, best practices, and checklists that an AI development agent **must** adhere to when performing software development tasks. It ensures consistency, quality, and maintainability.
+    *   **Action:** This is a **critical operational guide**. You **must** internalize and strictly apply the principles and checklists outlined in `[@frameworks/AI_CODING_FRAMEWORK.md](./frameworks/AI_CODING_FRAMEWORK.md)` for all coding and development-related activities. It includes core principles, phase-specific rules, and guidance on advanced topics like E2E testing, commit cadence, and multi-service environment management.
+
+*   **AI Agent Guide for Personal Notes (`~/notes/AI_AGENT_NOTES_GUIDE.md`):**
+    *   This document provides specific guidelines for how an AI agent should interact with the user's personal notes and local configuration directory (`~/notes/`), especially considering its use with Obsidian.md. It covers key files like `dev_tools_config.ini` and `project-list.txt`, important subdirectories (`projects/`, `sessions/`, `daily/`), and conventions for Markdown formatting and tagging.
+    *   **Action:** You **must** consult `[@AI_AGENT_NOTES_GUIDE.md](~/notes/AI_AGENT_NOTES_GUIDE.md)` when operating within or creating content for the `/home/dlighty/notes/` directory. This guide is crucial for ensuring your contributions are compatible with the user's knowledge base structure and Obsidian workflow. *(Note: The path `~/notes/` indicates the user's home notes directory, outside of this `common-ai` project.)*
+
 *   **Available Tools & Aliases (`TOOLS.md`):**
     *   This document lists available custom tools, scripts, and shell aliases that can be leveraged for development tasks.
     *   **Action:** Consult `[@TOOLS.md](./TOOLS.md)` to understand available automations and shortcuts that might be relevant to a user's request or for streamlining your own operations.
